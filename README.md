@@ -19,4 +19,4 @@ Each activity is logged with a timer. There can be more than one activity at one
 Activity log, daily, and weekly chart. 
 
 ### Libraries
-![ActionBarSherlock](http://actionbarsherlock.com/)
+[ActionBarSherlock](http://actionbarsherlock.com/)
