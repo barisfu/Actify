@@ -36,7 +36,7 @@ import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivityPause;
 import com.application.actify.model.ActivitySetting;
 import com.application.actify.model.Guest;
-import com.application.actify.parser.XMLParser;
+import com.application.actify.util.XMLParser;
 
 public class MainFragmentActivity extends SherlockFragmentActivity {
 	public static Context appContext;

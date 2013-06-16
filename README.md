@@ -25,5 +25,9 @@ Activity log, daily, and weekly chart.
 ### Requires Android
 2.2 (API Level 8, Froyo) and up
 
+### Login
+Username:q
+Password:q
+
 ### Author
 [Chitra H. Ayuningtyas](mailto:chitrahapsari@gmail.com)

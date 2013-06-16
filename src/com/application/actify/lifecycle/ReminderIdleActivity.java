@@ -34,6 +34,7 @@ import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivitySetting;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
+import com.application.actify.util.WakeLocker;
 
 public class ReminderIdleActivity extends Activity {
 	private Vibrator vibrator;
@@ -114,7 +115,8 @@ public class ReminderIdleActivity extends Activity {
 				getResources().getString(R.string.btnYes), 
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {						
+					public void onClick(DialogInterface dialog, int which) {		
+						WakeLocker.release();
 						vibrator.cancel();
 						if (soundOn)  mediaPlayer.stop();
 						dialog.dismiss();

@@ -1,4 +1,4 @@
-package com.application.actify.parser;
+package com.application.actify.util;
 
 import java.io.IOException;
 import java.io.StringReader;
