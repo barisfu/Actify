@@ -14,9 +14,16 @@ Actify is an Android app for manually logging daily activities.
 
 ### Screenshots
 ![Activity logging](https://lh5.googleusercontent.com/-I9Vaq5_emqA/UbzXi_rxxEI/AAAAAAAAGiE/-iTJUZqFsAQ/w451-h357-no/Actify-1.jpg)  
-Each activity is logged with a timer. There can be more than one activity at one time.
+Each activity is logged with a timer. There can be more than one activity at one time.  
+
 ![Activity history and charts](https://lh3.googleusercontent.com/-IgIe8lSEBJI/UbzXi_SOhJI/AAAAAAAAGiI/7gwNcAY7PNM/w676-h351-no/Actify-3.jpg)  
 Activity log, daily, and weekly chart. 
 
 ### Libraries
 [ActionBarSherlock](http://actionbarsherlock.com/)
+
+### Requires Android
+2.2 (API Level 8, Froyo) and up
+
+### Author
+[Chitra H. Ayuningtyas](mailto:chitrahapsari@gmail.com)
