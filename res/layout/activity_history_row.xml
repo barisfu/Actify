@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"    
+	android:layout_width="match_parent"
+    android:layout_height="match_parent"        	  
+    android:orientation="vertical"
+    android:background="@drawable/row_selector" >      
+    <LinearLayout    
+		android:layout_width="match_parent"
+	    android:layout_height="match_parent"        	  
+	    android:orientation="horizontal">  
+	    <View
+	        android:id="@+id/idColor"
+	        android:layout_width="0dp"
+	        android:layout_weight="0.07"
+	        android:layout_height="match_parent" />	
+	    <LinearLayout     
+	        android:id="@+id/ll"
+			android:layout_width="0dp"
+	        android:layout_weight="0.75"
+	        android:layout_height="wrap_content"  
+	        android:paddingLeft="3dp"          	  
+	        android:orientation="vertical"
+	        android:background="@drawable/row_selector" >
+		    <TextView
+				android:id="@+id/txtActivity"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="left"
+				android:textSize="16sp"
+				android:textStyle="bold"
+				android:textColor="@color/txtPrimaryColor"/>	
+			<TextView
+				android:id="@+id/txtTimestamp"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="left|center_vertical"
+				android:textSize="12sp"
+				android:textStyle="bold"
+				android:textColor="@color/txtSecondaryColor"/>
+		    <TextView
+				android:id="@+id/txtLocation"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="left|center_vertical"
+				android:textSize="12sp"
+				android:textColor="@color/txtSecondaryColor"/>
+		    <TextView
+				android:id="@+id/txtGuest"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="left|center_vertical"
+				android:textSize="12sp"
+				android:textColor="@color/txtSecondaryColor" />	
+		</LinearLayout>
+		<View          
+	      android:layout_height="match_parent" 
+	      android:layout_width="0.5dp" 
+	      android:background="@color/separatorColor"
+	      android:layout_marginTop="5dp"
+	      android:layout_marginBottom="5dp" />
+		<ImageView
+		    android:id="@+id/imageView"
+	        android:layout_width="0dp"
+	        android:layout_weight="0.15"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="top|center"
+	        android:src="@drawable/delete"
+	        android:scaleType="center"/>  		
+    </LinearLayout>           
+	<View          
+      android:layout_width="match_parent" 
+      android:layout_height="1dp" 
+      android:background="@color/separatorColor" />
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="string_array_activity_icons">
+        <item>sleeping</item>
+        <item>toileting</item>
+        <item>showering</item>
+        <item>dressing</item> 				
+        <item>hygiene</item>
+        <item>going_out</item>
+        <item>arriving</item>
+        <item>babysitting</item>
+        <item>playing</item>					
+        <item>watching_tv</item>
+        <item>reading</item>
+        <item>studying</item>
+        <item>using_computer</item>			
+        <item>prepping_drink</item>
+        <item>drinking</item>
+        <item>prepping_meal</item>
+        <item>eating</item>	
+        <item>ironing</item>
+        <item>washing</item>
+        <item>washing_dishes</item>
+        <item>cleaning</item>
+        <item>taking_trash</item>
+    </string-array>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="string_array_activities">
+        <item>Sleeping</item>
+        <item>Toileting</item>
+        <item>Showering</item>
+        <item>Dressing</item> 				
+        <item>Hygiene</item>
+        <item>Going out</item>
+        <item>Arriving</item>
+        <item>Babysitting</item>
+        <item>Playing</item>					
+        <item>Watching TV</item>
+        <item>Reading</item>
+        <item>Studying</item>
+        <item>Using computer</item>			
+        <item>Preparing a drink</item>
+        <item>Drinking</item>
+        <item>Preparing a meal</item>
+        <item>Eating</item>	
+        <item>Ironing</item>
+        <item>Washing clothes</item>
+        <item>Washing dishes</item>
+        <item>Cleaning/tidying</item>
+        <item>Taking trash out</item>
+    </string-array>
+</resources>

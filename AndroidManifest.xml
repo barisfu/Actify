@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.application.actify"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
+        <activity
+            android:name="com.application.actify.lifecycle.MainFragmentActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.application.actify.lifecycle.LoginActivity" />
+         <activity android:name="com.application.actify.lifecycle.ActivityHistoryActivity" />
+        <activity android:name="com.application.actify.lifecycle.ChartDailyActivity" />
+        <activity android:name="com.application.actify.lifecycle.ChartWeeklyActivity" />
+        <activity android:name="com.application.actify.lifecycle.GuestHistoryActivity" />
+        <activity android:name="com.application.actify.lifecycle.ActivitySettingsActivity" />
+        <activity android:name="com.application.actify.lifecycle.ActivityPickerActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsLocationActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsVisibilityActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsOrderActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsEmailActivity" />
+        <activity android:name="com.application.actify.lifecycle.SettingsReminderActivity" />           
+        <activity android:name="com.application.actify.lifecycle.ReminderActivityActivity" />
+        <activity android:name="com.application.actify.lifecycle.ReminderIdleActivity" />
+        <receiver android:name="com.application.actify.service.ActivityReminderBroadcastReceiver"></receiver>
+        <receiver android:name="com.application.actify.service.IdleReminderBroadcastReceiver"></receiver>
+    </application>
+
+</manifest>

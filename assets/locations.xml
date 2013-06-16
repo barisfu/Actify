@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<locations>
+    <item><location>Outside of the house</location></item>
+	<item><location>House (roaming around)</location></item>
+	<item><location>1. Hall</location></item>
+	<item><location>1. Toilet</location></item>
+	<item><location>1. Bathroom</location></item>
+	<item><location>1. Parent's bedroom</location></item>
+	<item><location>1. Child's bedroom</location></item>
+	<item><location>1. Dining Room</location></item>
+	<item><location>1. Kitchen</location></item>
+	<item><location>1. Living room</location></item>
+	<item><location>0. Hall</location></item>
+	<item><location>0. Bathroom</location></item>
+	<item><location>0. Child's bedroom</location></item>
+	<item><location>0. Common room</location></item>
+	<item><location>0. Office</location></item>
+	<item><location>0. Laundry</location></item>
+	<item><location>0. Storage room</location></item>
+	<item><location>0. Garage</location></item>	
+</locations>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<setting>
+    <item>
+        <activity>Sleeping</activity>
+        <location>1. Parent's bedroom</location>        
+        <icon>sleeping</icon>
+        <id>1</id>
+        <order>15</order>
+        <visibility>1</visibility>
+        <duration>480</duration>
+    </item>
+    <item>
+        <activity>Toileting</activity>
+        <location>1. Toilet</location>        
+        <icon>toileting</icon>
+        <id>2</id>
+        <order>0</order>
+        <visibility>1</visibility>
+        <duration>5</duration>
+    </item>
+    <item>
+        <activity>Showering</activity>
+        <location>1. Bathroom</location>
+        <icon>showering</icon>
+        <id>3</id>
+        <order>2</order>
+        <visibility>1</visibility>
+        <duration>30</duration>
+    </item>
+    <item>
+        <activity>Dressing</activity> 
+        <location>1. Parent's bedroom</location>        
+        <icon>dressing</icon>
+        <id>4</id>
+        <order>3</order> 
+        <visibility>1</visibility>
+        <duration>15</duration>
+    </item>
+    <item>
+        <activity>Hygiene</activity>
+        <location>1. Bathroom</location>        
+        <icon>hygiene</icon>
+        <id>5</id>
+        <order>1</order>
+        <visibility>1</visibility>
+        <duration>10</duration>
+    </item>
+    <item>
+        <activity>Going out</activity>
+        <location>0. Garage</location>
+        <icon>going_out</icon>
+        <id>6</id>
+        <order>16</order>
+        <visibility>1</visibility>
+        <duration>480</duration>
+    </item>
+    <item>
+        <activity>Babysitting</activity>
+        <location>House (roaming around)</location>        
+        <icon>babysitting</icon>
+        <id>8</id>
+        <order>17</order>
+        <visibility>1</visibility>
+        <duration>480</duration>
+    </item>
+    <item>        
+        <activity>Playing</activity>
+        <location>0. Common room</location>	        
+        <icon>playing</icon>
+        <id>9</id>
+        <order>12</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>
+    <item>
+        <activity>Watching TV</activity>
+        <location>1. Living room</location>       
+        <icon>watching_tv</icon>
+        <id>10</id>
+        <order>9</order>
+        <visibility>1</visibility>
+        <duration>120</duration>
+    </item>
+    <item>
+        <activity>Reading</activity>
+        <location>1. Living room</location>        
+        <icon>reading</icon>
+        <id>11</id>
+        <order>10</order>
+        <visibility>1</visibility>
+        <duration>30</duration>
+    </item>
+    <item>
+        <activity>Studying</activity>
+        <location>0. Office</location>        
+        <icon>studying</icon>
+        <id>12</id>
+        <order>14</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>
+    <item>
+        <activity>Using computer</activity>	
+        <location>0. Office</location>	        
+        <icon>using_computer</icon>	
+        <id>13</id>
+        <order>13</order>
+        <visibility>1</visibility>
+        <duration>30</duration>
+    </item>
+    <item>
+        <activity>Prep. drinks</activity>
+        <location>1. Kitchen</location>       
+        <icon>prepping_drink</icon>
+        <id>14</id>
+        <order>4</order>
+        <visibility>1</visibility>
+        <duration>10</duration>
+    </item>
+    <item>
+        <activity>Drinking</activity>
+        <location>1. Dining Room</location>       
+        <icon>drinking</icon>
+        <id>15</id>
+        <order>5</order>
+        <visibility>1</visibility>
+        <duration>10</duration>
+    </item>
+    <item>
+        <activity>Cooking</activity>
+        <location>1. Kitchen</location>        
+        <icon>prepping_meal</icon>
+        <id>16</id>
+        <order>6</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>
+ 	<item>
+ 	    <activity>Eating</activity>	
+ 	    <location>1. Dining Room</location>	 	    
+ 	    <icon>eating</icon>
+ 	    <id>17</id>
+ 	    <order>7</order>	
+        <visibility>1</visibility>
+        <duration>30</duration>
+    </item>				
+    <item>
+        <activity>Ironing</activity>
+        <location>0. Laundry</location>        
+        <icon>ironing</icon>
+        <id>18</id>
+        <order>21</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>    
+    <item>
+        <activity>Laundry</activity>
+        <location>0. Laundry</location>        
+        <icon>washing</icon>
+        <id>19</id>
+        <order>20</order>
+        <visibility>1</visibility>
+        <duration>30</duration>
+    </item>    
+    <item>
+        <activity>Dishes</activity>
+        <location>1. Kitchen</location>        
+        <icon>washing_dishes</icon>
+        <id>20</id>
+        <order>18</order>
+        <visibility>1</visibility>
+        <duration>45</duration>
+    </item>    
+    <item>
+        <activity>Cleaning</activity>
+        <location>House (roaming around)</location>        
+        <icon>cleaning</icon>
+        <id>21</id>
+        <order>19</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>     		
+    <item>
+        <activity>Taking trash out</activity>
+        <location>Outside of the house</location>        
+        <icon>taking_trash</icon>
+        <id>22</id>
+        <order>22</order>
+        <visibility>1</visibility>
+        <duration>10</duration>
+    </item>
+    <item>
+        <activity>Play-/listening music</activity>
+        <location>0. Common room</location>        
+        <icon>music</icon>
+        <id>23</id>
+        <order>11</order>
+        <visibility>1</visibility>
+        <duration>20</duration>
+    </item>   
+    <item>
+        <activity>Exercising</activity>
+        <location>0. Common room</location>        
+        <icon>exercise</icon>
+        <id>24</id>
+        <order>24</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>  
+    <item>
+        <activity>Maintenance</activity>
+        <location>House (roaming around)</location>        
+        <icon>maintenance</icon>
+        <id>25</id>
+        <order>23</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>  
+    <item>
+        <activity>Relaxing</activity>
+        <location>1. Living room</location>        
+        <icon>relaxing</icon>
+        <id>26</id>
+        <order>8</order>
+        <visibility>1</visibility>
+        <duration>60</duration>
+    </item>  
+</setting>

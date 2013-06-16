@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/history_row"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp">  
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal">  
+		<Button
+			android:id="@+id/btnStart"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight=".35" 
+			android:layout_margin="5dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:gravity="center"
+			android:lines="2"
+			android:textSize="14sp"
+			android:textColor="@color/btnTextColor"
+			android:background = "@drawable/button_selector_round_small"	/>
+		<TextView
+		    android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight=".05" 
+			android:gravity="center"
+			android:textSize="14sp"
+			android:text="-" />
+		<Button
+			android:id="@+id/btnEnd"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight=".35" 
+			android:layout_margin="5dp"
+			android:paddingTop="5dp"
+			android:paddingBottom="5dp"
+			android:gravity="center"
+			android:lines="2"
+			android:textSize="14sp"
+			android:textColor="@color/btnTextColor"
+			android:background = "@drawable/button_selector_round_small"	/>
+		<ImageButton 
+	        android:id="@+id/btnDelete"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"    
+	        android:layout_weight=".15"           
+	        android:src="@drawable/delete"
+	        android:layout_margin="5dp"
+	        android:background = "@drawable/button_selector_round_small"/>
+	</LinearLayout>
+	<View          
+		android:layout_width="match_parent" 
+      	android:layout_height="1dp" 
+      	android:layout_marginLeft="5dp"
+    	android:layout_marginRight="5dp"
+      	android:background="@color/separatorColor" />
+</LinearLayout>

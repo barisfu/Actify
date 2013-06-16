@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout   
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	<Button
+        android:id="@+id/btnAdd"   
+        android:layout_alignParentTop="true"
+        android:background="@drawable/button_selector"
+        android:drawableLeft="@drawable/add"
+        android:text="@string/add"
+        style="@style/ButtonText"/>
+	<View          
+		android:id="@+id/separator"  
+      	android:layout_width="match_parent" 
+      	android:layout_height="1dp" 
+      	android:background="#DADADA"
+      	android:layout_below="@id/btnAdd" />
+	<ScrollView
+	    android:id="@+id/scroller"
+	    android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/separator">
+	    <LinearLayout
+	        android:id="@+id/timer_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:animateLayoutChanges="true">
+	    </LinearLayout>
+	</ScrollView>    
+</RelativeLayout  >
