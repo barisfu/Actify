@@ -321,8 +321,18 @@ public class ReminderActivityActivity extends Activity {
         		ReminderActivityActivity.this.finish();
             	
 			}
-        });           
+        });      
+                
         activityPickerDialog.setView(dialogView);
+        activityPickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				ReminderActivityActivity.this.finish();
+				
+			}
+		});
+        
         activityPickerDialog.setTitle("What are you doing now, after "+ activity +"?");
         activityPickerDialog.show();   	            	            
     			
