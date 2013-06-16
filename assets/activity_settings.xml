@@ -71,7 +71,7 @@
         <id>9</id>
         <order>12</order>
         <visibility>1</visibility>
-        <duration>60</duration>
+        <duration>30</duration>
     </item>
     <item>
         <activity>Watching TV</activity>
@@ -107,7 +107,7 @@
         <id>13</id>
         <order>13</order>
         <visibility>1</visibility>
-        <duration>30</duration>
+        <duration>120</duration>
     </item>
     <item>
         <activity>Prep. drinks</activity>
