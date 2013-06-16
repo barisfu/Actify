@@ -18,12 +18,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
-import com.application.actify.component.SliceInfo;
 import com.application.actify.core.Actify;
 import com.application.actify.model.ActivityGuest;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivityPause;
 import com.application.actify.model.Guest;
+import com.application.actify.view.component.SliceInfo;
 
 public class ActifySQLiteHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "actify.db";

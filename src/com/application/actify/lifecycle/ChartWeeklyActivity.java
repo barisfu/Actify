@@ -22,12 +22,12 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.application.actify.R;
-import com.application.actify.component.BlockData;
 import com.application.actify.core.Actify;
 import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivityPause;
 import com.application.actify.view.DensityView;
+import com.application.actify.view.component.BlockData;
 
 public class ChartWeeklyActivity extends SherlockActivity {
 	private DensityView density;

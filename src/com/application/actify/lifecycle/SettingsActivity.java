@@ -7,14 +7,14 @@ import org.joda.time.DateTime;
 
 import com.application.actify.R;
 import com.application.actify.adapter.SettingsEntryAdapter;
-import com.application.actify.component.Mail;
-import com.application.actify.component.SettingCheckboxItem;
-import com.application.actify.component.SettingEntryItem;
-import com.application.actify.component.SettingItem;
-import com.application.actify.component.SettingSectionItem;
 import com.application.actify.core.Actify;
-import com.application.actify.core.Exporter;
 import com.application.actify.db.ActifySQLiteHelper;
+import com.application.actify.util.Exporter;
+import com.application.actify.util.Mail;
+import com.application.actify.view.component.SettingCheckboxItem;
+import com.application.actify.view.component.SettingEntryItem;
+import com.application.actify.view.component.SettingItem;
+import com.application.actify.view.component.SettingSectionItem;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;

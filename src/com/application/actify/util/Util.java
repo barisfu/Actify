@@ -1,4 +1,4 @@
-package com.application.actify.core;
+package com.application.actify.util;
 
 import java.util.Calendar;
 

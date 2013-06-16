@@ -1,4 +1,4 @@
-package com.application.actify.component;
+package com.application.actify.util;
 
 import java.io.File;
 import java.util.Date;

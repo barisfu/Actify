@@ -1,4 +1,4 @@
-package com.application.actify.core;
+package com.application.actify.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -13,6 +13,7 @@ import java.util.zip.ZipOutputStream;
 
 import android.os.Environment;
 
+import com.application.actify.core.Actify;
 import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivitySetting;
 

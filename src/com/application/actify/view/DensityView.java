@@ -3,7 +3,7 @@ package com.application.actify.view;
 import java.util.List;
 
 import com.application.actify.R;
-import com.application.actify.component.BlockData;
+import com.application.actify.view.component.BlockData;
 
 import android.app.ProgressDialog;
 import android.content.Context;

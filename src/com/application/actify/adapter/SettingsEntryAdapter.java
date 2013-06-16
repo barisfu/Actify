@@ -15,11 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.application.actify.R;
-import com.application.actify.component.SettingCheckboxItem;
-import com.application.actify.component.SettingEntryItem;
-import com.application.actify.component.SettingItem;
-import com.application.actify.component.SettingSectionItem;
 import com.application.actify.core.Actify;
+import com.application.actify.view.component.SettingCheckboxItem;
+import com.application.actify.view.component.SettingEntryItem;
+import com.application.actify.view.component.SettingItem;
+import com.application.actify.view.component.SettingSectionItem;
 
 
 public class SettingsEntryAdapter extends ArrayAdapter<SettingItem> {

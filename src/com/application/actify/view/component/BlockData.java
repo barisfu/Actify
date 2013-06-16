@@ -1,4 +1,4 @@
-package com.application.actify.component;
+package com.application.actify.view.component;
 
 public class BlockData {
 	private float x;

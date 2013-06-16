@@ -45,10 +45,10 @@ import android.widget.TextView;
 import ca.laplanete.mobile.pageddragdropgrid.PagedDragDropGrid;
 import ca.laplanete.mobile.pageddragdropgrid.PagedDragDropGridAdapter;
 
-import com.application.actify.component.OrderItem;
-import com.application.actify.component.OrderPage;
 import com.application.actify.core.Actify;
 import com.application.actify.model.ActivitySetting;
+import com.application.actify.view.component.OrderItem;
+import com.application.actify.view.component.OrderPage;
 
 public class SettingsOrderAdapter implements PagedDragDropGridAdapter {
 
