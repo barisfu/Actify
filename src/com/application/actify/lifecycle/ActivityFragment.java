@@ -366,7 +366,6 @@ public class ActivityFragment extends SherlockFragment {
 	    			};
 					@Override
 					public void onClick(View v) {
-						Log.w("oldHourMinutes", String.valueOf(oldHours)+":"+String.valueOf(oldMinutes));
 						TimePickerDialog tpDialog = new TimePickerDialog(ActivityFragment.this.getActivity(), 
 								nextAlarmSettingListener, oldHours, oldMinutes, true) ;
 						tpDialog.setTitle("Reminder");
@@ -650,8 +649,7 @@ public class ActivityFragment extends SherlockFragment {
 		timer_container.addView(rowView, timer_container.getChildCount());
 	}
 	
-	private void setIdleReminder() {
-		
+	private void setIdleReminder() {		
 		
 		Intent intent = new Intent(getActivity(), IdleReminderBroadcastReceiver.class);
     	intent.putExtra("id", Actify.PI_ID);                	
@@ -668,15 +666,7 @@ public class ActivityFragment extends SherlockFragment {
 	
 	private OnClickListener startListener = new OnClickListener() {
     	public void onClick(View v) {
-    		
-    			if (Actify.pendingIntents.get(Actify.PI_ID) !=null) {
-		    		alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
-		        	Actify.pendingIntents.remove(Actify.PI_ID);
-		        	Actify.pendingIntentTimes.remove(Actify.PI_ID);		   		        	
-    			} 
-    		
-    		
- 	    		final AlertDialog activityPickerDialog  = new AlertDialog.Builder(act).create();
+    			final AlertDialog activityPickerDialog  = new AlertDialog.Builder(act).create();
  	    		
 	    	    LayoutInflater inflater = act.getLayoutInflater();
 	    	    View dialogView = inflater.inflate(R.layout.activity_picker, null);
@@ -688,6 +678,10 @@ public class ActivityFragment extends SherlockFragment {
 	    			@Override
 	    			public void onItemClick(AdapterView<?> parent, View v, int position,
 	    					long id) {
+	    				alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
+	    	        	Actify.pendingIntents.remove(Actify.PI_ID);
+	    	        	Actify.pendingIntentTimes.remove(Actify.PI_ID);	 
+	    				
 	    				int activityid = (int) id;
 	    				ActivitySetting as = Actify.findActivitySettingById(activityid);
 	    				String locationStr = as.getLocation();

@@ -96,7 +96,7 @@ public class Actify {
 	public static boolean showPicker = false;
 	
 	public static final int PI_ID = -111;
-	public static final int PI_IDLE_TIME = 15;
+	public static final int PI_IDLE_TIME = 2;
 
 	public static ArrayAdapter<String> locationAdapter;
 	public static ArrayAdapter<String> colorAdapter;

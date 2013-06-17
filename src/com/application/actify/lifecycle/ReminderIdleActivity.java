@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -22,6 +23,8 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -44,10 +47,20 @@ public class ReminderIdleActivity extends Activity {
 	private SharedPreferences settings;
 	private MediaPlayer mediaPlayer; 
 	private boolean soundOn;
+	private AlertDialog currentActDialog, activityPickerDialog;
+	private Window window;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		window = this.getWindow();
+	    window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
+	    window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+	    window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
+	    
+	    // this is to prevent recreating when the screen is rotated
+	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		long[] pattern = { 0, 2000, 2000, 
@@ -73,6 +86,20 @@ public class ReminderIdleActivity extends Activity {
 		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
 		
 		showCurrentActDialog();
+	}
+	
+	@Override
+	public void onDestroy() {		
+		// put the dismiss here to prevent asynchronous tasks that causes window leak
+		if (currentActDialog != null) {
+			if (currentActDialog.isShowing())
+				currentActDialog.dismiss();
+		}
+		if (activityPickerDialog != null) {
+			if (activityPickerDialog.isShowing())
+				activityPickerDialog.dismiss();
+		}
+		super.onDestroy();
 	}
 	
 	private void playSound(Context context, Uri alert) {
@@ -108,7 +135,7 @@ public class ReminderIdleActivity extends Activity {
 	
 	// Ask if current activity is still running
 	private void showCurrentActDialog() {
-		AlertDialog currentActDialog  = new AlertDialog.Builder(this).create();
+		currentActDialog  = new AlertDialog.Builder(this).create();
 		currentActDialog.setTitle("Reminder");
 		currentActDialog.setMessage("Are you doing something at the moment?");
 		currentActDialog.setButton(AlertDialog.BUTTON_POSITIVE, 
@@ -130,10 +157,10 @@ public class ReminderIdleActivity extends Activity {
 				getResources().getString(R.string.btnNo), 
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {						
+					public void onClick(DialogInterface dialog, int which) {
+						WakeLocker.release();
 						vibrator.cancel();	
 						if (soundOn)  mediaPlayer.stop();
-						dialog.dismiss();
 						alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
 			    				+ (Actify.PI_IDLE_TIME * 60 * 1000), Actify.pendingIntents.get(Actify.PI_ID));
 						ReminderIdleActivity.this.finish();
@@ -146,7 +173,7 @@ public class ReminderIdleActivity extends Activity {
 	private void startNewActivityDialog() {
 		
 
-    	final AlertDialog activityPickerDialog  = new AlertDialog.Builder(this).create();
+    	activityPickerDialog  = new AlertDialog.Builder(this).create();
     		
 	    LayoutInflater inflater = getLayoutInflater();
 	    View dialogView = inflater.inflate(R.layout.activity_picker, null);
@@ -191,8 +218,7 @@ public class ReminderIdleActivity extends Activity {
         			durationStr = duration + " minutes";
         		}
         		Toast.makeText(ReminderIdleActivity.this, "Reminder set in " + durationStr,
-        				Toast.LENGTH_LONG).show();
-            	activityPickerDialog.dismiss();            	
+        				Toast.LENGTH_LONG).show();         	
             	
             	Actify.showPicker = true;
         		Intent mainIntent = new Intent(getApplicationContext(), MainFragmentActivity.class);

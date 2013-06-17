@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -25,6 +26,8 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -53,10 +56,20 @@ public class ReminderActivityActivity extends Activity {
 	private Calendar calEnd;	
 	private boolean soundOn;
 	private MediaPlayer mediaPlayer; 
+	private AlertDialog activityPickerDialog;
+	private Window window;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		window = this.getWindow();
+	    window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
+	    window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+	    window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
+	    
+	    // this is to prevent recreating when the screen is rotated
+	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		settings = getSharedPreferences(Actify.PREFS_NAME, 0);
         userid = settings.getInt("userid", -1);
@@ -90,6 +103,16 @@ public class ReminderActivityActivity extends Activity {
 		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
 		
 		showCurrentActDialog();
+	}
+	
+	@Override
+	public void onDestroy() {	
+		// put the dismiss here to prevent asynchronous tasks that causes window leak
+		if (activityPickerDialog != null) {
+			if (activityPickerDialog.isShowing())
+				activityPickerDialog.dismiss();
+		}
+		super.onDestroy();
 	}
 	
 	private void playSound(Context context, Uri alert) {
@@ -145,7 +168,8 @@ public class ReminderActivityActivity extends Activity {
 				getResources().getString(R.string.btnNo), 
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {						
+					public void onClick(DialogInterface dialog, int which) {
+						WakeLocker.release();
 						vibrator.cancel();
 						if (soundOn) mediaPlayer.stop();
 						dialog.dismiss();
@@ -267,7 +291,7 @@ public class ReminderActivityActivity extends Activity {
 	private void startNewActivityDialog() {
 		
 
-    	final AlertDialog activityPickerDialog  = new AlertDialog.Builder(this).create();
+    	activityPickerDialog  = new AlertDialog.Builder(this).create();
     		
 	    LayoutInflater inflater = getLayoutInflater();
 	    View dialogView = inflater.inflate(R.layout.activity_picker, null);
@@ -312,8 +336,7 @@ public class ReminderActivityActivity extends Activity {
         			durationStr = duration + " minutes";
         		}
         		Toast.makeText(ReminderActivityActivity.this, "Reminder set in " + durationStr,
-        				Toast.LENGTH_LONG).show();
-            	activityPickerDialog.dismiss();            	
+        				Toast.LENGTH_LONG).show();          	
             	
             	Actify.showPicker = true;
         		Intent mainIntent = new Intent(getApplicationContext(), MainFragmentActivity.class);
@@ -325,16 +348,7 @@ public class ReminderActivityActivity extends Activity {
 			}
         });      
                 
-        activityPickerDialog.setView(dialogView);
-        activityPickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-			
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				ReminderActivityActivity.this.finish();
-				
-			}
-		});
-        
+        activityPickerDialog.setView(dialogView);        
         activityPickerDialog.setTitle("What are you doing now, after "+ activity +"?");
         activityPickerDialog.show();   	            	            
     			
