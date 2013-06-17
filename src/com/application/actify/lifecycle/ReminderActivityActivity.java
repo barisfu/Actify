@@ -283,7 +283,15 @@ public class ReminderActivityActivity extends Activity {
         	Actify.pendingIntents.remove(id);
         	Actify.pendingIntentTimes.remove(id);
         	
-        	startNewActivityDialog();
+        	if (Actify.pendingIntents.size() == 0) {
+        		startNewActivityDialog();
+        	} else {
+        		Intent mainIntent = new Intent(getApplicationContext(), MainFragmentActivity.class);
+        		mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        		mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        		startActivity(mainIntent);
+        		ReminderActivityActivity.this.finish();
+        	}
 		}
 	};
 
@@ -347,6 +355,13 @@ public class ReminderActivityActivity extends Activity {
             	
 			}
         });      
+        
+        activityPickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				ReminderActivityActivity.this.finish();
+			}
+		});
                 
         activityPickerDialog.setView(dialogView);        
         activityPickerDialog.setTitle("What are you doing now, after "+ activity +"?");
