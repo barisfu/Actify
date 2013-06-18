@@ -21,7 +21,7 @@ public class ActivityPickerAdapter extends BaseAdapter {
  
     // Constructor
     public ActivityPickerAdapter(Context c){
-        mContext = c;
+        mContext = c;        
         activitySettings = Actify.getVisibleActivitySettings();
     }
  

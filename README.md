@@ -20,13 +20,13 @@ Each activity is logged with a timer. There can be more than one activity at one
 Activity log, daily, and weekly chart. 
 
 ### Libraries
-[ActionBarSherlock](http://actionbarsherlock.com/)
+Download [ActionBarSherlock](http://actionbarsherlock.com/) and include the project as a library.
 
 ### Requires Android
 2.2 (API Level 8, Froyo) and up
 
 ### Login
-Username:q
+Username:q  
 Password:q
 
 ### Author

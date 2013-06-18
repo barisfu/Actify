@@ -85,6 +85,10 @@ public class ReminderIdleActivity extends Activity {
 		
 		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
 		
+		if (Actify.activitySettings == null) {
+        	Actify.loadSettings(this);
+        }
+		
 		showCurrentActDialog();
 	}
 	

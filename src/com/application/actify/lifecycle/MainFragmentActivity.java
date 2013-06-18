@@ -1,19 +1,11 @@
 package com.application.actify.lifecycle;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -21,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -34,9 +25,7 @@ import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityGuest;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivityPause;
-import com.application.actify.model.ActivitySetting;
 import com.application.actify.model.Guest;
-import com.application.actify.util.XMLParser;
 
 public class MainFragmentActivity extends SherlockFragmentActivity {
 	public static Context appContext;
@@ -46,8 +35,6 @@ public class MainFragmentActivity extends SherlockFragmentActivity {
 	private int userid;				
 	private boolean logout = false;			
 	private ActifySQLiteHelper db;
-	private AssetManager assetManager;
-	private Document docActivitySettings;
 	
 	private ViewPager viewPager;
 	private TabsAdapter tabsAdapter;
@@ -61,7 +48,6 @@ public class MainFragmentActivity extends SherlockFragmentActivity {
 		viewPager.setId(R.id.pager);
 		setContentView(viewPager);		
 		
-		assetManager = getAssets();
 		settings = getSharedPreferences(Actify.PREFS_NAME, 0);
 		editor = settings.edit();				
 		
@@ -72,21 +58,12 @@ public class MainFragmentActivity extends SherlockFragmentActivity {
 		if (loggedin) {
 			userid = settings.getInt("userid", -1);
 			
-			loadSettings();		
+			Actify.loadSettings(this);		
 			
 			ActionBar bar = getSupportActionBar();
 			bar.setDisplayShowHomeEnabled(false);
 			bar.setDisplayShowTitleEnabled(false); 
 			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-			
-			/*ActionBar.Tab tabActivity = bar.newTab().setText(getResources().getString(R.string.tabActivity));
-		    ActionBar.Tab tabGuest = bar.newTab().setText(getResources().getString(R.string.tabGuest));
-
-		    tabActivity.setTabListener(new MyTabListener());
-		    tabGuest.setTabListener(new MyTabListener());
-	        bar.addTab(tabActivity);
-	        bar.addTab(tabGuest);
-	        */
 		    
 			tabsAdapter = new TabsAdapter(this, viewPager);
 			
@@ -107,131 +84,7 @@ public class MainFragmentActivity extends SherlockFragmentActivity {
 		}		
 	}	
 	
-	
-	private void loadSettings() {
 		
-        String xml = "";        
-        
-        InputStream input;
-        
-        
-        try {
-        	
-        	// Parse locations
-        	input = assetManager.open(Actify.FILE_LOCATIONS);
-
-            int size = input.available();
-            byte[] buffer = new byte[size];
-            input.read(buffer);
-            input.close();
-
-            xml = new String(buffer);
-            if (!xml.isEmpty()) {
-            	List<String> locationList = new ArrayList<String>();
-            	
-            	XMLParser parser = new XMLParser();
-            	Document doc = parser.getDomElement(xml);
-            	NodeList nl = doc.getElementsByTagName(Actify.KEY_ITEM);
-        		for (int i = 0; i < nl.getLength(); i++) {
-        			Element e = (Element) nl.item(i);
-        			locationList.add(parser.getValue(e, Actify.KEY_LOCATION));
-        		}
-        		Actify.locationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, locationList); 
-            }
-            
-         // Parse colors
-        	input = assetManager.open(Actify.FILE_COLORS);
-
-            size = input.available();
-            buffer = new byte[size];
-            input.read(buffer);
-            input.close();
-
-            xml = new String(buffer);
-            if (!xml.isEmpty()) {
-            	List<String> colorList = new ArrayList<String>();
-            	
-            	XMLParser parser = new XMLParser();
-            	Document doc = parser.getDomElement(xml);
-            	NodeList nl = doc.getElementsByTagName(Actify.KEY_ITEM);
-        		for (int i = 0; i < nl.getLength(); i++) {
-        			Element e = (Element) nl.item(i);
-        			colorList.add(parser.getValue(e, Actify.KEY_COLOR));
-        		}
-        		Actify.colorAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, colorList); 
-            }
-            
-            // Parse activities
-            input = assetManager.open(Actify.FILE_ACTIVITY_SETTINGS);
-  
-            size = input.available();
-            buffer = new byte[size];
-            input.read(buffer);
-            input.close();
-
-            xml = new String(buffer);
-            
-            if (!xml.isEmpty()) {
-            	List<String> activityList = new ArrayList<String>();
-            	
-            	List<ActivitySetting> listAS = new ArrayList<ActivitySetting>();
-            	
-            	XMLParser parser = new XMLParser();
-            	docActivitySettings = parser.getDomElement(xml);
-            	NodeList nl = docActivitySettings.getElementsByTagName(Actify.KEY_ITEM);
-        		// looping through all item nodes <item>
-        		for (int i = 0; i < nl.getLength(); i++) {
-   			
-        			Element e = (Element) nl.item(i);
-        			listAS.add(new ActivitySetting(Integer.parseInt(parser.getValue(e, Actify.KEY_ID)),
-        					Integer.parseInt(parser.getValue(e, Actify.KEY_ORDER)),
-        					parser.getValue(e, Actify.KEY_ACTIVITY),
-        					parser.getValue(e, Actify.KEY_LOCATION),
-        					parser.getValue(e, Actify.KEY_ICON),
-        					(Integer.parseInt(parser.getValue(e, Actify.KEY_VISIBILITY)) == 1) ? true : false,
-        					Integer.parseInt(parser.getValue(e, Actify.KEY_DURATION))));
-        		}        		        		       
-        		  		
-        		if (settings.contains("loc_"+listAS.get(0).getId()+"_"+userid)) {        			
-                	for (int i = 0; i < listAS.size(); i++) {
-                		ActivitySetting as = listAS.get(i);
-                		as.setOrder(settings.getInt("order_"+as.getId()+"_"+userid, -1));
-                		as.setDuration(settings.getInt("duration_"+as.getId()+"_"+userid, 0));
-                		as.setVisible(settings.getBoolean("vis_"+as.getId()+"_"+userid, false));
-                		as.setLocation(settings.getString("loc_"+as.getId()+"_"+userid, ""));
-                	}        	
-                } else {
-                	editor.putBoolean("sound"+"_"+userid, false);
-                	for (int i = 0; i <  listAS.size(); i++) {
-                		ActivitySetting as = listAS.get(i);
-                		editor.putString("loc_"+as.getId()+"_"+userid, as.getLocation());
-                		editor.putInt("order_"+as.getId()+"_"+userid, as.getOrder());
-                		editor.putBoolean("vis_"+as.getId()+"_"+userid, as.isVisible());
-                		editor.putInt("duration_"+as.getId()+"_"+userid, as.getDuration());
-                		editor.putInt("idle_"+userid, Actify.PI_IDLE_TIME);
-                	}    
-                	editor.commit();
-                }
-        		
-        		Collections.sort(listAS);
-        		
-        		for (int i = 0; i < listAS.size(); i++) {
-        			ActivitySetting as = listAS.get(i);
-        			if (as.isVisible())
-        				activityList.add(as.getActivity());
-        		}
-        		Actify.activityAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, activityList);
-        		Actify.activitySettings = listAS;
-            }       
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-           	e.printStackTrace();
-        }
-                		
-        
-	}
-	  
-	
 	@Override
 	public void onDestroy() {
 		super.onResume();

@@ -102,6 +102,10 @@ public class ReminderActivityActivity extends Activity {
 		
 		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
 		
+		if (Actify.activitySettings == null) {
+        	Actify.loadSettings(this);
+        }
+		
 		showCurrentActDialog();
 	}
 	
@@ -297,7 +301,9 @@ public class ReminderActivityActivity extends Activity {
 
 	// Show dialog to start a new activity
 	private void startNewActivityDialog() {
-		
+		alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
+    	Actify.pendingIntents.remove(Actify.PI_ID);
+    	Actify.pendingIntentTimes.remove(Actify.PI_ID);	
 
     	activityPickerDialog  = new AlertDialog.Builder(this).create();
     		
