@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -42,6 +43,7 @@ import com.application.actify.model.ActivityGuest;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivitySetting;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
+import com.application.actify.util.Reminder;
 import com.application.actify.util.WakeLocker;
 
 public class ReminderActivityActivity extends Activity {
@@ -214,15 +216,10 @@ public class ReminderActivityActivity extends Activity {
 	TimePickerDialog.OnTimeSetListener nextAlarmSettingListener =new TimePickerDialog.OnTimeSetListener() {
 		@Override
 		public void onTimeSet(TimePicker view, int hour, int minute) {
-			PendingIntent pi = Actify.pendingIntents.get(id);
-			alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-    				+ (((hour*3600)+(minute*60)) * 1000), pi);
-			Actify.pendingIntentTimes.remove(id);
-			DateTime dtReminder = new DateTime();
-			dtReminder = dtReminder.plusHours(hour);
-			dtReminder = dtReminder.plusMinutes(minute);
-    		Actify.pendingIntentTimes.put(id, dtReminder);
-			ReminderActivityActivity.this.finish();
+			
+    		Reminder.setActivityReminder(ReminderActivityActivity.this, id, hour*60+minute, activity);
+    		
+    		ReminderActivityActivity.this.finish();
 		}
 	};
 	
@@ -255,6 +252,7 @@ public class ReminderActivityActivity extends Activity {
 		@Override
 		public void onTimeSet(TimePicker view, int hour, int minute) {
 			
+			
 			ActivityInstance ai = db.getActivityInstance(id);
         	
         	calEnd = Calendar.getInstance();
@@ -282,12 +280,10 @@ public class ReminderActivityActivity extends Activity {
         	Toast.makeText(ReminderActivityActivity.this, 
         			activity + getResources().getString(R.string.toastActivitySaved), 
         			Toast.LENGTH_SHORT).show();
+        	        	
+        	Reminder.cancelAlarm(ReminderActivityActivity.this, ai.getId());        	
         	
-        	alarmManager.cancel(Actify.pendingIntents.get(id));
-        	Actify.pendingIntents.remove(id);
-        	Actify.pendingIntentTimes.remove(id);
-        	
-        	if (Actify.pendingIntents.size() == 0) {
+        	if (getRunningActivitySize()  == 0) {
         		startNewActivityDialog();
         	} else {
         		Intent mainIntent = new Intent(getApplicationContext(), MainFragmentActivity.class);
@@ -301,9 +297,7 @@ public class ReminderActivityActivity extends Activity {
 
 	// Show dialog to start a new activity
 	private void startNewActivityDialog() {
-		alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
-    	Actify.pendingIntents.remove(Actify.PI_ID);
-    	Actify.pendingIntentTimes.remove(Actify.PI_ID);	
+		
 
     	activityPickerDialog  = new AlertDialog.Builder(this).create();
     		
@@ -318,6 +312,9 @@ public class ReminderActivityActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
+				
+				Reminder.cancelIdleAlarm(ReminderActivityActivity.this);
+				
 				int activityid = (int) id;
 				ActivitySetting as = Actify.findActivitySettingById(activityid);
 				String locationStr = as.getLocation();
@@ -325,29 +322,16 @@ public class ReminderActivityActivity extends Activity {
     			
             	ActivityInstance ai = new ActivityInstance(activityid, userid, calEnd, Calendar.getInstance(), locationid);
             	ai = db.addActivity(ai);
-
             	
-            	// start alarm
-            	int duration = as.getDuration();
-            	Intent intent = new Intent(ReminderActivityActivity.this, ActivityReminderBroadcastReceiver.class);
-            	intent.putExtra("id", ai.getId());
-            	intent.putExtra("activity", as.getActivity());
-            	intent.putExtra("duration", duration);
-        		PendingIntent pendingIntent = PendingIntent.getBroadcast(
-        				ReminderActivityActivity.this, new Random().nextInt(10000), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        		Actify.pendingIntents.put(ai.getId(), pendingIntent);	
-        		DateTime dtReminder = new DateTime();
-        		dtReminder = dtReminder.plusMinutes(duration);
-        		Actify.pendingIntentTimes.put(ai.getId(), dtReminder);
-        		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-        				+ (duration * 60 * 1000), pendingIntent);
+            	Reminder.setActivityReminder(ReminderActivityActivity.this, ai.getId(), as.getDuration(), as.getActivity());
+        		int newDuration = as.getDuration();
         		String durationStr;
-        		if (duration >= 60) {
-        			int hour = (int) Math.floor(duration/60);
-        			int minutes = duration - (hour*60);
+        		if (newDuration >= 60) {
+        			int hour = (int) Math.floor(newDuration/60);
+        			int minutes = newDuration - (hour*60);
         			durationStr = hour + " hours " + minutes + " minutes"; 
         		} else {
-        			durationStr = duration + " minutes";
+        			durationStr = newDuration + " minutes";
         		}
         		Toast.makeText(ReminderActivityActivity.this, "Reminder set in " + durationStr,
         				Toast.LENGTH_LONG).show();          	
@@ -372,8 +356,12 @@ public class ReminderActivityActivity extends Activity {
         activityPickerDialog.setView(dialogView);        
         activityPickerDialog.setTitle("What are you doing now, after "+ activity +"?");
         activityPickerDialog.show();   	            	            
-    			
-		
+    			   
+	}
+	
+	private int getRunningActivitySize() {
+		settings = getSharedPreferences(Actify.PREFS_NAME, 0);
+		return db.countRunningActivity(userid);
 	}
 	
 }

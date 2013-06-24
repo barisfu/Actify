@@ -11,6 +11,7 @@ import com.application.actify.core.Actify;
 import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.util.Exporter;
 import com.application.actify.util.Mail;
+import com.application.actify.util.Reminder;
 import com.application.actify.view.component.SettingCheckboxItem;
 import com.application.actify.view.component.SettingEntryItem;
 import com.application.actify.view.component.SettingItem;
@@ -55,7 +56,7 @@ public class SettingsActivity extends ListActivity {
         editor = settings.edit();
         userid = settings.getInt("userid", -1);
         username = settings.getString("gmail_username_"+userid, "");
-        idle = settings.getInt("idle_"+userid, Actify.PI_IDLE_TIME);
+        idle = settings.getInt("idle_"+userid, Reminder.PI_IDLE_TIME);
         
         ListView lv = getListView();
         LayoutInflater inflater = getLayoutInflater();

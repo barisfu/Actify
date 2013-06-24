@@ -37,6 +37,7 @@ import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivitySetting;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
+import com.application.actify.util.Reminder;
 import com.application.actify.util.WakeLocker;
 
 public class ReminderIdleActivity extends Activity {
@@ -151,9 +152,7 @@ public class ReminderIdleActivity extends Activity {
 						vibrator.cancel();
 						if (soundOn)  mediaPlayer.stop();
 						dialog.dismiss();
-						alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
-						Actify.pendingIntents.remove(Actify.PI_ID);
-			        	Actify.pendingIntentTimes.remove(Actify.PI_ID);
+						
 						startNewActivityDialog();
 					}			
 		});
@@ -165,8 +164,7 @@ public class ReminderIdleActivity extends Activity {
 						WakeLocker.release();
 						vibrator.cancel();	
 						if (soundOn)  mediaPlayer.stop();
-						alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-			    				+ (Actify.PI_IDLE_TIME * 60 * 1000), Actify.pendingIntents.get(Actify.PI_ID));
+						Reminder.setIdleReminder(ReminderIdleActivity.this);
 						ReminderIdleActivity.this.finish();
 					}			
 		});
@@ -190,6 +188,9 @@ public class ReminderIdleActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
+				
+				Reminder.cancelIdleAlarm(ReminderIdleActivity.this);
+				
 				int activityid = (int) id;
 				ActivitySetting as = Actify.findActivitySettingById(activityid);
 				String locationStr = as.getLocation();
@@ -201,18 +202,9 @@ public class ReminderIdleActivity extends Activity {
             	
             	// start alarm
             	int duration = as.getDuration();
-            	Intent intent = new Intent(ReminderIdleActivity.this, ActivityReminderBroadcastReceiver.class);
-            	intent.putExtra("id", ai.getId());
-            	intent.putExtra("activity", as.getActivity());
-            	intent.putExtra("duration", duration);
-        		PendingIntent pendingIntent = PendingIntent.getBroadcast(
-        				ReminderIdleActivity.this, new Random().nextInt(10000), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        		Actify.pendingIntents.put(ai.getId(), pendingIntent);	
-        		DateTime dtReminder = new DateTime();
-        		dtReminder = dtReminder.plusMinutes(duration);
-        		Actify.pendingIntentTimes.put(ai.getId(), dtReminder);
-        		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-        				+ (duration * 60 * 1000), pendingIntent);
+            	
+            	Reminder.setActivityReminder(ReminderIdleActivity.this, ai.getId(), as.getDuration(), as.getActivity());
+        		
         		String durationStr;
         		if (duration >= 60) {
         			int hour = (int) Math.floor(duration/60);
@@ -222,8 +214,8 @@ public class ReminderIdleActivity extends Activity {
         			durationStr = duration + " minutes";
         		}
         		Toast.makeText(ReminderIdleActivity.this, "Reminder set in " + durationStr,
-        				Toast.LENGTH_LONG).show();         	
-            	
+        				Toast.LENGTH_LONG).show();         	            
+        		
             	Actify.showPicker = true;
         		Intent mainIntent = new Intent(getApplicationContext(), MainFragmentActivity.class);
         		mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

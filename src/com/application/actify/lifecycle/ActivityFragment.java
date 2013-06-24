@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ import com.application.actify.model.ActivitySetting;
 import com.application.actify.model.Guest;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
 import com.application.actify.service.IdleReminderBroadcastReceiver;
+import com.application.actify.util.Reminder;
 
 public class ActivityFragment extends SherlockFragment {
 	
@@ -72,6 +74,7 @@ public class ActivityFragment extends SherlockFragment {
 	private List<ActivityPause> activityPauses;
 	
 	private SharedPreferences settings;
+	private Editor editor;
 	private ActifySQLiteHelper db;
 	private int userid;
 	private String householdid;
@@ -93,6 +96,7 @@ public class ActivityFragment extends SherlockFragment {
         res = act.getResources();
         
         settings = act.getSharedPreferences(Actify.PREFS_NAME, 0);
+        editor = settings.edit();
         userid = settings.getInt("userid", -1);
         householdid = settings.getString("householdid", "");  
         
@@ -116,7 +120,7 @@ public class ActivityFragment extends SherlockFragment {
         
         if (activityInstances.isEmpty()) {
         	scroller.setBackgroundResource(R.drawable.background_blank);
-        	setIdleReminder();
+        	Reminder.setIdleReminder(getActivity());
         } else {        
 	        for (int i = 0; i < activityInstances.size(); i++) {	        		   
 	        	activityPauses.add(new ActivityPause(activityInstances.get(i).getId(), Calendar.getInstance(), Calendar.getInstance()));
@@ -179,6 +183,13 @@ public class ActivityFragment extends SherlockFragment {
 		final Button btnStop = (Button) rowView.findViewById(R.id.btnStop);		
 		btnStop.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+            	/*alarmManager.cancel(Actify.pendingIntents.get(ai.getId()));
+            	Actify.pendingIntents.remove(ai.getId());
+            	Actify.pendingIntentTimes.remove(ai.getId());
+            	Actify.printIntents();
+            	*/
+            	Reminder.cancelAlarm(getActivity(), ai.getId());
+            	
             	mChronometer.stop();	
             	timer_container.removeView(rowView);   
             	
@@ -208,14 +219,13 @@ public class ActivityFragment extends SherlockFragment {
             	
             	Toast.makeText(act, 
             			strActivity +res.getString(R.string.toastActivitySaved), 
-            			Toast.LENGTH_SHORT).show();
+            			Toast.LENGTH_SHORT).show();            	
             	
-            	alarmManager.cancel(Actify.pendingIntents.get(ai.getId()));
-            	Actify.pendingIntents.remove(ai.getId());
-            	Actify.pendingIntentTimes.remove(ai.getId());
+            	
             	
             	if (timer_container.getChildCount() == 0) {
-            		setIdleReminder();            		
+            		//setIdleReminder();
+            		Reminder.setIdleReminder(getActivity());
             	}
             	
             }
@@ -321,8 +331,9 @@ public class ActivityFragment extends SherlockFragment {
 					}
 	    			
 	    		});
-	    			    		
-	    		DateTime dtReminder = Actify.pendingIntentTimes.get(ai.getId());
+	    			    	
+	    		String dtReminderString = settings.getString("reminder_"+ai.getId(), "");
+	    		DateTime dtReminder = DateTime.parse(dtReminderString, Actify.datetimeFormatJoda);
 	    		DateTime dtNow = new DateTime();
 	    		Duration duration = new Duration(dtNow, dtReminder);
 	    		int hours = (int) duration.getStandardHours();
@@ -622,14 +633,10 @@ public class ActivityFragment extends SherlockFragment {
         				}
         				
         				if (changeReminder) {
-        					PendingIntent pi = Actify.pendingIntents.get(ai.getId());
-        					alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-        		    				+ (((newHour*3600)+(newMinute*60)) * 1000), pi);
-        					Actify.pendingIntentTimes.remove(ai.getId());
-        					DateTime dtReminder = new DateTime();
-        					dtReminder = dtReminder.plusHours(newHour);
-        					dtReminder = dtReminder.plusMinutes(newMinute);
-        		    		Actify.pendingIntentTimes.put(ai.getId(), dtReminder);
+    	    				ActivitySetting as = Actify.findActivitySettingById(activityid);
+        					Reminder.cancelAlarm(getActivity(), ai.getId());
+        					Reminder.setActivityReminder(getActivity(), ai.getId(), newHour*60+newMinute, as.getActivity());
+        					
         				}        				
         				
         	        	dialog.dismiss();
@@ -648,21 +655,7 @@ public class ActivityFragment extends SherlockFragment {
 		}});
 		timer_container.addView(rowView, timer_container.getChildCount());
 	}
-	
-	private void setIdleReminder() {		
 		
-		Intent intent = new Intent(getActivity(), IdleReminderBroadcastReceiver.class);
-    	intent.putExtra("id", Actify.PI_ID);                	
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(
-				getActivity(), new Random().nextInt(10000), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Actify.pendingIntents.put(Actify.PI_ID, pendingIntent);	
-		DateTime dtReminder = new DateTime();
-		dtReminder = dtReminder.plusMinutes(Actify.PI_IDLE_TIME);
-		Actify.pendingIntentTimes.put(Actify.PI_ID, dtReminder);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-				+ (Actify.PI_IDLE_TIME * 60 * 1000), pendingIntent); 
-		
-	}
 	
 	private OnClickListener startListener = new OnClickListener() {
     	public void onClick(View v) {
@@ -678,9 +671,7 @@ public class ActivityFragment extends SherlockFragment {
 	    			@Override
 	    			public void onItemClick(AdapterView<?> parent, View v, int position,
 	    					long id) {
-	    				alarmManager.cancel(Actify.pendingIntents.get(Actify.PI_ID));
-	    	        	Actify.pendingIntents.remove(Actify.PI_ID);
-	    	        	Actify.pendingIntentTimes.remove(Actify.PI_ID);	 
+	    				Reminder.cancelIdleAlarm(getActivity());
 	    				
 	    				int activityid = (int) id;
 	    				ActivitySetting as = Actify.findActivitySettingById(activityid);
@@ -693,21 +684,9 @@ public class ActivityFragment extends SherlockFragment {
 	                	activityPauses.add(ap);
 	                	inflateTimerRow(ai, ap);
 	                	
-	                	// start alarm
-	                	int duration = as.getDuration();
-	                	Intent intent = new Intent(getActivity(), ActivityReminderBroadcastReceiver.class);
-	                	intent.putExtra("id", ai.getId());
-	                	intent.putExtra("activity", as.getActivity());
-	                	intent.putExtra("duration", duration);
-	            		PendingIntent pendingIntent = PendingIntent.getBroadcast(
-	            				getActivity(), new Random().nextInt(10000), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-	            		Actify.pendingIntents.put(ai.getId(), pendingIntent);	
-	            		DateTime dtReminder = new DateTime();
-	            		dtReminder = dtReminder.plusMinutes(duration);
-	            		Actify.pendingIntentTimes.put(ai.getId(), dtReminder);
-	            		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-	            				+ (duration * 60 * 1000), pendingIntent);
+	                	Reminder.setActivityReminder(getActivity(), ai.getId(), as.getDuration(), as.getActivity());
 	            		
+	                	int duration = as.getDuration();
 	            		String durationStr;
 	            		if (duration >= 60) {
 	            			int hour = (int) Math.floor(duration/60);
@@ -721,6 +700,8 @@ public class ActivityFragment extends SherlockFragment {
 	                	
 	            		activityPickerDialog.dismiss();
 	                	Actify.showPicker = false;
+	                	
+	                	 
 	    			}
 	            });	            
 	            activityPickerDialog.setView(dialogView);

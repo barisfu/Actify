@@ -21,10 +21,12 @@ import android.app.PendingIntent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.ArrayAdapter;
 
 import com.application.actify.model.ActivitySetting;
+import com.application.actify.util.Reminder;
 import com.application.actify.util.XMLParser;
 
 public class Actify {
@@ -103,17 +105,14 @@ public class Actify {
 	public static final int PAUSE_RESUMED = 1;
 	public static final String[] PAUSE_STRINGS = new String[] {"Paused", "Resumed"};
 	
-	public static boolean showPicker = false;
-	
-	public static final int PI_ID = -111;
-	public static final int PI_IDLE_TIME = 15;
+	public static boolean showPicker = false;		
 
 	public static ArrayAdapter<String> locationAdapter;
 	public static ArrayAdapter<String> colorAdapter;
 	public static ArrayAdapter<String> activityAdapter;
 	
-	public static SparseArray<PendingIntent> pendingIntents = new SparseArray<PendingIntent>();
-	public static SparseArray<DateTime> pendingIntentTimes = new SparseArray<DateTime>();
+	//public static SparseArray<PendingIntent> pendingIntents = new SparseArray<PendingIntent>();
+	//public static SparseArray<DateTime> pendingIntentTimes = new SparseArray<DateTime>();
     
     public static List<ActivitySetting> activitySettings;
     
@@ -182,6 +181,7 @@ public class Actify {
 	}
     
     public static void loadSettings(Activity act) {
+    	
     	AssetManager assetManager = act.getAssets();
     	SharedPreferences settings = act.getSharedPreferences(Actify.PREFS_NAME, 0);
 		Editor editor = settings.edit();
@@ -287,7 +287,7 @@ public class Actify {
                 		editor.putInt("order_"+as.getId()+"_"+userid, as.getOrder());
                 		editor.putBoolean("vis_"+as.getId()+"_"+userid, as.isVisible());
                 		editor.putInt("duration_"+as.getId()+"_"+userid, as.getDuration());
-                		editor.putInt("idle_"+userid, Actify.PI_IDLE_TIME);
+                		editor.putInt("idle_"+userid, Reminder.PI_IDLE_TIME);
                 	}    
                 	editor.commit();
                 }

@@ -19,7 +19,7 @@ Each activity is logged with a timer. There can be more than one activity at one
 ![Activity history and charts](https://lh3.googleusercontent.com/-IgIe8lSEBJI/UbzXi_SOhJI/AAAAAAAAGiI/7gwNcAY7PNM/w676-h351-no/Actify-3.jpg)  
 Activity log, daily, and weekly chart. 
 
-### Libraries
+### Dependencies
 Download [ActionBarSherlock](http://actionbarsherlock.com/) and include the project as a library.
 
 ### Requires Android
@@ -29,5 +29,5 @@ Download [ActionBarSherlock](http://actionbarsherlock.com/) and include the proj
 Username:q  
 Password:q
 
-### Author
-[Chitra H. Ayuningtyas](mailto:chitrahapsari@gmail.com)
+### Licence
+Actify is licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)

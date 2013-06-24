@@ -554,6 +554,23 @@ public class ActifySQLiteHelper extends SQLiteOpenHelper {
         return activityList;
     }
     
+    public int countRunningActivity(int user_id) {
+    	String selectQuery = 
+    			"SELECT COUNT(*) FROM " + TABLE_ACTIVITIES 
+        		+ " WHERE (" + ACTIVITIES_MODE + "==" + Actify.MODE_RUNNING
+        		+ " OR " + ACTIVITIES_MODE + "==" + Actify.MODE_PAUSED +") "
+        		+ " AND " + ACTIVITIES_USERID + "==" + user_id;
+    	SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = 0;
+        if (cursor.moveToFirst()) {
+        	count = Integer.parseInt(cursor.getString(0));
+        }        	
+        db.close();
+        
+        return count;
+    }
+    
     public boolean exportActivityList(String filename, int user_id) {
     	boolean returnCode = false;
     	
