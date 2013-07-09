@@ -36,8 +36,9 @@ import com.application.actify.core.Actify;
 import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivitySetting;
+import com.application.actify.model.Reminder;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
-import com.application.actify.util.Reminder;
+import com.application.actify.util.ReminderUtil;
 import com.application.actify.util.WakeLocker;
 
 public class ReminderIdleActivity extends Activity {
@@ -50,10 +51,23 @@ public class ReminderIdleActivity extends Activity {
 	private boolean soundOn;
 	private AlertDialog currentActDialog, activityPickerDialog;
 	private Window window;
+	private Reminder rem;
+	private int action = Reminder.REMINDER_NOTHING;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
+		
+		db = new ActifySQLiteHelper(this);		
+		
+		settings = getSharedPreferences(Actify.PREFS_NAME, 0);
+        userid = settings.getInt("userid", -1);
+        soundOn = settings.getBoolean("sound_"+userid, false);
+		if (soundOn) 
+			playSound(this, getAlarmUri());	
+		
+		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
 		
 		window = this.getWindow();
 	    window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -76,15 +90,8 @@ public class ReminderIdleActivity extends Activity {
 				2000, 5*60*1000};
 		vibrator.vibrate(pattern, 0);	
 		
-		db = new ActifySQLiteHelper(this);
-		
-		settings = getSharedPreferences(Actify.PREFS_NAME, 0);
-        userid = settings.getInt("userid", -1);
-        soundOn = settings.getBoolean("sound_"+userid, false);
-		if (soundOn) 
-			playSound(this, getAlarmUri());	
-		
-		alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+		// create reminder to be logged		
+		rem = new Reminder(userid, Reminder.REMINDER_IDLE, Calendar.getInstance(), Calendar.getInstance(), -1, -1);
 		
 		if (Actify.activitySettings == null) {
         	Actify.loadSettings(this);
@@ -104,6 +111,8 @@ public class ReminderIdleActivity extends Activity {
 			if (activityPickerDialog.isShowing())
 				activityPickerDialog.dismiss();
 		}
+		rem.setAction(action);
+		db.addReminder(rem);
 		super.onDestroy();
 	}
 	
@@ -147,7 +156,9 @@ public class ReminderIdleActivity extends Activity {
 				getResources().getString(R.string.btnYes), 
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {		
+					public void onClick(DialogInterface dialog, int which) {	
+						rem.setEnd(Calendar.getInstance());
+						action = Reminder.REMINDER_YES;
 						WakeLocker.release();
 						vibrator.cancel();
 						if (soundOn)  mediaPlayer.stop();
@@ -161,10 +172,12 @@ public class ReminderIdleActivity extends Activity {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						rem.setEnd(Calendar.getInstance());
+						action = Reminder.REMINDER_NO;
 						WakeLocker.release();
 						vibrator.cancel();	
 						if (soundOn)  mediaPlayer.stop();
-						Reminder.setIdleReminder(ReminderIdleActivity.this);
+						ReminderUtil.setIdleReminder(ReminderIdleActivity.this);
 						ReminderIdleActivity.this.finish();
 					}			
 		});
@@ -189,7 +202,7 @@ public class ReminderIdleActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
 				
-				Reminder.cancelIdleAlarm(ReminderIdleActivity.this);
+				ReminderUtil.cancelIdleAlarm(ReminderIdleActivity.this);
 				
 				int activityid = (int) id;
 				ActivitySetting as = Actify.findActivitySettingById(activityid);
@@ -203,7 +216,7 @@ public class ReminderIdleActivity extends Activity {
             	// start alarm
             	int duration = as.getDuration();
             	
-            	Reminder.setActivityReminder(ReminderIdleActivity.this, ai.getId(), as.getDuration(), as.getActivity());
+            	ReminderUtil.setActivityReminder(ReminderIdleActivity.this, ai.getId(), as.getDuration(), as.getActivity());
         		
         		String durationStr;
         		if (duration >= 60) {

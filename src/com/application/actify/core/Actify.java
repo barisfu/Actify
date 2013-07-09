@@ -26,7 +26,7 @@ import android.util.SparseArray;
 import android.widget.ArrayAdapter;
 
 import com.application.actify.model.ActivitySetting;
-import com.application.actify.util.Reminder;
+import com.application.actify.util.ReminderUtil;
 import com.application.actify.util.XMLParser;
 
 public class Actify {
@@ -287,7 +287,7 @@ public class Actify {
                 		editor.putInt("order_"+as.getId()+"_"+userid, as.getOrder());
                 		editor.putBoolean("vis_"+as.getId()+"_"+userid, as.isVisible());
                 		editor.putInt("duration_"+as.getId()+"_"+userid, as.getDuration());
-                		editor.putInt("idle_"+userid, Reminder.PI_IDLE_TIME);
+                		editor.putInt("idle_"+userid, ReminderUtil.PI_IDLE_TIME);
                 	}    
                 	editor.commit();
                 }

@@ -17,7 +17,7 @@ import com.application.actify.model.ActivitySetting;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
 import com.application.actify.service.IdleReminderBroadcastReceiver;
 
-public class Reminder {
+public class ReminderUtil {
 	public static final int PI_ID = -111;
 	public static final int PI_IDLE_TIME = 15;
 	

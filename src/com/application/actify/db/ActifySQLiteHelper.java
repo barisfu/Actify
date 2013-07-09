@@ -23,6 +23,7 @@ import com.application.actify.model.ActivityGuest;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivityPause;
 import com.application.actify.model.Guest;
+import com.application.actify.model.Reminder;
 import com.application.actify.view.component.SliceInfo;
 
 public class ActifySQLiteHelper extends SQLiteOpenHelper {
@@ -82,6 +83,16 @@ public class ActifySQLiteHelper extends SQLiteOpenHelper {
 	public static final String ACTIVITYGUESTS_GUESTSID = "guests_id";
 	public static final String ACTIVITYGUESTS_SYNC = SYNC;
 	public static final String ACTIVITYGUESTS_MODE = MODE;
+	
+	public static final String TABLE_REMINDER = "reminder";
+	public static final String REMINDER_ID = ID;
+	public static final String REMINDER_USERID = "userid";
+	public static final String REMINDER_TYPE = "type";
+	public static final String REMINDER_START = START;
+	public static final String REMINDER_END = END;
+	public static final String REMINDER_ACTIVITIESID = "activities_id";
+	public static final String REMINDER_ACTION = "action";
+	
 
 	// Database creation sql statement
 	private static final String ACTIVITIES_CREATE = "CREATE TABLE "
@@ -372,6 +383,17 @@ public class ActifySQLiteHelper extends SQLiteOpenHelper {
 			+"); END"
 			+";";
 	
+	private static final String REMINDER_CREATE = "CREATE TABLE "
+			+ TABLE_REMINDER + "(" 
+			+ REMINDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ REMINDER_USERID + " INTEGER, " 
+			+ REMINDER_TYPE + " INTEGER, " 
+			+ REMINDER_START + " DATETIME, " 
+			+ REMINDER_END + " DATETIME, " 
+			+ REMINDER_ACTIVITIESID + " INTEGER, " 
+			+ REMINDER_ACTION + " INTEGER"
+			+");";
+	
 	public ActifySQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -393,7 +415,9 @@ public class ActifySQLiteHelper extends SQLiteOpenHelper {
 		database.execSQL(ACTIVITYPAUSES_UPDATE_TRIGGER_CREATE);
 		database.execSQL(ACTIVITYPAUSES_DELETE_TRIGGER_CREATE);
 		
-		database.execSQL(ACTIVITYGUESTS_CREATE);		
+		database.execSQL(ACTIVITYGUESTS_CREATE);	
+		
+		database.execSQL(REMINDER_CREATE);
 	}
 
 	@Override
@@ -1621,4 +1645,103 @@ public class ActifySQLiteHelper extends SQLiteOpenHelper {
         db.close();
     } 
     
+    /**
+     * TABLE_REMINDER
+     */
+	// Adding new reminder
+    public void addReminder(Reminder rem) {
+        SQLiteDatabase db = this.getWritableDatabase();
+ 
+        ContentValues values = new ContentValues();  
+        values.put(REMINDER_TYPE, rem.getType());
+        values.put(REMINDER_USERID, rem.getUserid());
+        values.put(REMINDER_START, Actify.SQLiteDatetimeFormat.format(rem.getStart().getTime()));
+        values.put(REMINDER_END, Actify.SQLiteDatetimeFormat.format(rem.getEnd().getTime()));        
+        values.put(REMINDER_ACTIVITIESID, rem.getActivityid());
+        values.put(REMINDER_ACTION, rem.getAction());
+        
+        // Inserting Row
+        db.insert(TABLE_REMINDER, null, values);
+                
+        db.close(); // Closing database connection                       
+    } 
+    
+    public List<Reminder> getReminderList(String selectQuery) {
+        List<Reminder> reminderList = new ArrayList<Reminder>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+ 
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {            	
+            	int id = Integer.parseInt(cursor.getString(0));
+            	int userid = Integer.parseInt(cursor.getString(1));
+            	int type = Integer.parseInt(cursor.getString(2));            	
+            	                
+            	Calendar calStart = Calendar.getInstance();
+            	Calendar calEnd = Calendar.getInstance();            	
+                try {
+					calStart.setTime(Actify.SQLiteDatetimeFormat.parse(cursor.getString(3)));
+					calEnd.setTime(Actify.SQLiteDatetimeFormat.parse(cursor.getString(4)));
+				} catch (ParseException e) {
+					e.printStackTrace();
+					Log.e("ActifySQLiteHelper", "Datetime parsing error", e);
+				}
+                int activityid = Integer.parseInt(cursor.getString(5));
+                int action = Integer.parseInt(cursor.getString(6));
+
+                Reminder rem = new Reminder(id, userid, type, calStart, calEnd, activityid, action);            	
+            	reminderList.add(rem);
+            } while (cursor.moveToNext());
+        }
+ 
+        db.close();
+        // return activity list
+        return reminderList;
+    }
+    
+    public boolean exportReminderList(String filename, int user_id) {
+    	boolean returnCode = false;
+    	
+    	String selectQuery = "SELECT * FROM " + TABLE_REMINDER
+    			+ " WHERE " + REMINDER_USERID + "==" + user_id
+        		+ " ORDER BY " + REMINDER_START+ " ASC ";
+    	List<Reminder> list =  getReminderList(selectQuery);
+    	
+    	String csv = 
+    			REMINDER_ID + ","
+    			+ REMINDER_USERID + ","
+    			+ REMINDER_TYPE + ","
+    			+ REMINDER_START + ","
+    			+ REMINDER_END + ","
+    			+ REMINDER_ACTIVITIESID + ","
+    			+ REMINDER_ACTION + "\n"
+    			;
+    	try {
+    		File sdCard = Environment.getExternalStorageDirectory();
+    		File dir = new File (sdCard.getAbsolutePath() + "/Actify");
+    		dir.mkdirs();
+    		File outFile = new File(dir, filename);
+            FileWriter fileWriter = new FileWriter(outFile);
+            BufferedWriter out = new BufferedWriter(fileWriter);
+            out.write(csv);
+            for (Reminder rem : list) {
+            	csv = rem.getId() + ","            			
+            			+ rem.getUserid() + ","
+            			+ rem.getType() + ","
+            			+ Actify.datetimeFormat.format(rem.getStart().getTime()) + ","
+            			+ Actify.datetimeFormat.format(rem.getEnd().getTime()) + ","
+            			+ rem.getActivityid() + ","
+            			+ rem.getAction() + "\n"
+            			;
+            	out.write(csv);
+            }
+            out.close();
+    		returnCode = true;
+    	} catch (Exception e) {
+            returnCode = false;
+        }
+    	return returnCode;
+    }
 }

@@ -25,6 +25,11 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * Modified by: 
+ * Chitra H. Ayuningtyas
+ * https://github.com/chietz
+ * 
  */
 package com.application.actify.adapter;
 
@@ -104,7 +109,6 @@ public class SettingsOrderAdapter implements PagedDragDropGridAdapter {
 		ImageView iv = new ImageView(context);
 		OrderItem item = getItem(page, index);
 		iv.setImageResource(context.getResources().getIdentifier(item.getIcon(), null, null));		
-		//iv.setPadding(15, 15, 15, 15);
 		
 		layout.addView(iv);
 		

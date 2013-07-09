@@ -42,8 +42,9 @@ import com.application.actify.db.ActifySQLiteHelper;
 import com.application.actify.model.ActivityGuest;
 import com.application.actify.model.ActivityInstance;
 import com.application.actify.model.ActivitySetting;
+import com.application.actify.model.Reminder;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
-import com.application.actify.util.Reminder;
+import com.application.actify.util.ReminderUtil;
 import com.application.actify.util.WakeLocker;
 
 public class ReminderActivityActivity extends Activity {
@@ -60,6 +61,8 @@ public class ReminderActivityActivity extends Activity {
 	private MediaPlayer mediaPlayer; 
 	private AlertDialog activityPickerDialog;
 	private Window window;
+	private Reminder rem;
+	private int action = Reminder.REMINDER_NOTHING;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,9 @@ public class ReminderActivityActivity extends Activity {
 		//long[] pattern = { 0, 2000, 2000};		
 		vibrator.vibrate(pattern, 0);
 		
+		// create reminder to be logged		
+		rem = new Reminder(userid, Reminder.REMINDER_IDLE, Calendar.getInstance(), Calendar.getInstance(), id, -1);
+		
 		soundOn = settings.getBoolean("sound_"+userid, false);
 		if (soundOn) 
 			playSound(this, getAlarmUri());				
@@ -118,6 +124,8 @@ public class ReminderActivityActivity extends Activity {
 			if (activityPickerDialog.isShowing())
 				activityPickerDialog.dismiss();
 		}
+		rem.setAction(action);
+		db.addReminder(rem);
 		super.onDestroy();
 	}
 	
@@ -163,6 +171,8 @@ public class ReminderActivityActivity extends Activity {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {	
+						rem.setEnd(Calendar.getInstance());
+						action = Reminder.REMINDER_YES;
 						WakeLocker.release();
 						vibrator.cancel();
 						if (soundOn)  mediaPlayer.stop();
@@ -175,6 +185,8 @@ public class ReminderActivityActivity extends Activity {
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						rem.setEnd(Calendar.getInstance());
+						action = Reminder.REMINDER_NO;
 						WakeLocker.release();
 						vibrator.cancel();
 						if (soundOn) mediaPlayer.stop();
@@ -217,7 +229,7 @@ public class ReminderActivityActivity extends Activity {
 		@Override
 		public void onTimeSet(TimePicker view, int hour, int minute) {
 			
-    		Reminder.setActivityReminder(ReminderActivityActivity.this, id, hour*60+minute, activity);
+    		ReminderUtil.setActivityReminder(ReminderActivityActivity.this, id, hour*60+minute, activity);
     		
     		ReminderActivityActivity.this.finish();
 		}
@@ -281,7 +293,7 @@ public class ReminderActivityActivity extends Activity {
         			activity + getResources().getString(R.string.toastActivitySaved), 
         			Toast.LENGTH_SHORT).show();
         	        	
-        	Reminder.cancelAlarm(ReminderActivityActivity.this, ai.getId());        	
+        	ReminderUtil.cancelAlarm(ReminderActivityActivity.this, ai.getId());        	
         	
         	if (getRunningActivitySize()  == 0) {
         		startNewActivityDialog();
@@ -313,7 +325,7 @@ public class ReminderActivityActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
 				
-				Reminder.cancelIdleAlarm(ReminderActivityActivity.this);
+				ReminderUtil.cancelIdleAlarm(ReminderActivityActivity.this);
 				
 				int activityid = (int) id;
 				ActivitySetting as = Actify.findActivitySettingById(activityid);
@@ -323,7 +335,7 @@ public class ReminderActivityActivity extends Activity {
             	ActivityInstance ai = new ActivityInstance(activityid, userid, calEnd, Calendar.getInstance(), locationid);
             	ai = db.addActivity(ai);
             	
-            	Reminder.setActivityReminder(ReminderActivityActivity.this, ai.getId(), as.getDuration(), as.getActivity());
+            	ReminderUtil.setActivityReminder(ReminderActivityActivity.this, ai.getId(), as.getDuration(), as.getActivity());
         		int newDuration = as.getDuration();
         		String durationStr;
         		if (newDuration >= 60) {

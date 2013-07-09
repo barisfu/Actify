@@ -42,6 +42,7 @@ public class Exporter {
         result = result & db.exportActivityLog("activities_log.csv", userid);
         result = result & db.exportGuestLog("guests_log.csv", householdid);
         result = result & db.exportActivityPauseLog("activitypauses_log.csv", userid);
+        result = result & db.exportReminderList("reminder.csv", userid);
         result = result & this.exportActivitySetting();
         result = result & this.exportLocationSetting();
         
@@ -55,6 +56,7 @@ public class Exporter {
         		dir+"/activities_log.csv",
         		dir+"/guests_log.csv",
         		dir+"/activitypauses_log.csv",
+        		dir+"/reminder.csv",
         		dir+"/activity_list.csv",
         		dir+"/location_list.csv"};
         

@@ -1,4 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.application.actify.lifecycle;
+
+/**
+ * @author Chitra H. Ayuningtyas
+ */
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +74,7 @@ import com.application.actify.model.ActivitySetting;
 import com.application.actify.model.Guest;
 import com.application.actify.service.ActivityReminderBroadcastReceiver;
 import com.application.actify.service.IdleReminderBroadcastReceiver;
-import com.application.actify.util.Reminder;
+import com.application.actify.util.ReminderUtil;
 
 public class ActivityFragment extends SherlockFragment {
 	
@@ -120,7 +138,7 @@ public class ActivityFragment extends SherlockFragment {
         
         if (activityInstances.isEmpty()) {
         	scroller.setBackgroundResource(R.drawable.background_blank);
-        	Reminder.setIdleReminder(getActivity());
+        	ReminderUtil.setIdleReminder(getActivity());
         } else {        
 	        for (int i = 0; i < activityInstances.size(); i++) {	        		   
 	        	activityPauses.add(new ActivityPause(activityInstances.get(i).getId(), Calendar.getInstance(), Calendar.getInstance()));
@@ -188,7 +206,7 @@ public class ActivityFragment extends SherlockFragment {
             	Actify.pendingIntentTimes.remove(ai.getId());
             	Actify.printIntents();
             	*/
-            	Reminder.cancelAlarm(getActivity(), ai.getId());
+            	ReminderUtil.cancelAlarm(getActivity(), ai.getId());
             	
             	mChronometer.stop();	
             	timer_container.removeView(rowView);   
@@ -225,7 +243,7 @@ public class ActivityFragment extends SherlockFragment {
             	
             	if (timer_container.getChildCount() == 0) {
             		//setIdleReminder();
-            		Reminder.setIdleReminder(getActivity());
+            		ReminderUtil.setIdleReminder(getActivity());
             	}
             	
             }
@@ -586,7 +604,6 @@ public class ActivityFragment extends SherlockFragment {
         					ActivityGuest ag = new ActivityGuest(ai.getId(), g.getId());
         					ag.setMode(Actify.MODE_RUNNING);
         					db.addActivityGuest(ag);
-        					//Log.w("guest", "guest");
         				}
         				for (Guest g : delGuests) {
         					ActivityGuest ag = new ActivityGuest(ai.getId(), g.getId());
@@ -633,9 +650,9 @@ public class ActivityFragment extends SherlockFragment {
         				}
         				
         				if (changeReminder) {
-    	    				ActivitySetting as = Actify.findActivitySettingById(activityid);
-        					Reminder.cancelAlarm(getActivity(), ai.getId());
-        					Reminder.setActivityReminder(getActivity(), ai.getId(), newHour*60+newMinute, as.getActivity());
+        					ReminderUtil.cancelAlarm(getActivity(), ai.getId());
+    	    				ActivitySetting as = Actify.findActivitySettingById(activityid);        					
+        					ReminderUtil.setActivityReminder(getActivity(), ai.getId(), newHour*60+newMinute, as.getActivity());
         					
         				}        				
         				
@@ -671,7 +688,7 @@ public class ActivityFragment extends SherlockFragment {
 	    			@Override
 	    			public void onItemClick(AdapterView<?> parent, View v, int position,
 	    					long id) {
-	    				Reminder.cancelIdleAlarm(getActivity());
+	    				ReminderUtil.cancelIdleAlarm(getActivity());
 	    				
 	    				int activityid = (int) id;
 	    				ActivitySetting as = Actify.findActivitySettingById(activityid);
@@ -684,7 +701,7 @@ public class ActivityFragment extends SherlockFragment {
 	                	activityPauses.add(ap);
 	                	inflateTimerRow(ai, ap);
 	                	
-	                	Reminder.setActivityReminder(getActivity(), ai.getId(), as.getDuration(), as.getActivity());
+	                	ReminderUtil.setActivityReminder(getActivity(), ai.getId(), as.getDuration(), as.getActivity());
 	            		
 	                	int duration = as.getDuration();
 	            		String durationStr;
